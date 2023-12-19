@@ -23,9 +23,10 @@ public class InventoryManager : MonoBehaviour
         Items.Add(item);
     }
 
-    public void Remove(Item item)
+    public void Remove2DItem(int itemIndex)
     {
-        Items.Remove(item);
+        Items.RemoveAt(itemIndex);
+        ListItems();
     }
 
     public void ListItems()
@@ -39,22 +40,28 @@ public class InventoryManager : MonoBehaviour
         {
             GameObject obj = Instantiate(InventoryItem, ItemContent);
             // var itemName = obj.transform.Find("ItemName").GetComponent<Text>();
-            var itemIcon = obj.transform.Find("Icon").GetComponent<Image>();
 
+            var itemIcon = obj.transform.Find("Icon").GetComponent<Image>();
             itemIcon.sprite = item.icon;
+
+            obj.GetComponent<Button>().onClick.AddListener(() => Instantiate3DItem(item));
         }
 
         SetInventoryItems();
     }
     
-
     public void SetInventoryItems()
     {
         InventoryItems = ItemContent.GetComponentsInChildren<InventoryItemController>();
 
-        for(int i = 0; i < Items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
-            InventoryItems[i].AddItem(Items[i]);
+            InventoryItems[i].AddItem(Items[i], i);
         }
+    }
+
+    void Instantiate3DItem(Item item)
+    {
+        GameObject obj = Instantiate(item.prefab, Input.mousePosition, Quaternion.identity);
     }
 }
