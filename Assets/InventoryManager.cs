@@ -5,6 +5,13 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
+    public static float Wallet;
+    public static int genId = 0;
+    void Start()
+    {
+        Wallet = 1000;
+    }
+
     public static InventoryManager Instance;
     public List<Item> Items = new List<Item>();
 
@@ -49,7 +56,7 @@ public class InventoryManager : MonoBehaviour
 
         SetInventoryItems();
     }
-    
+
     public void SetInventoryItems()
     {
         InventoryItems = ItemContent.GetComponentsInChildren<InventoryItemController>();
@@ -60,8 +67,24 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    void Instantiate3DItem(Item item)
+    public void Instantiate3DItem(Item item)
     {
-        GameObject obj = Instantiate(item.prefab, Input.mousePosition, Quaternion.identity);
+        if (Wallet >= item.value)
+        {
+            DragAndDrop.val = item.value;
+            Wallet -= item.value;
+            MapItem.Map.Add(genId, Vector3.zero);
+            DragAndDrop.id = genId++;
+            Camera mainCamera = Camera.main;
+
+            Vector3 cameraDirection = mainCamera.transform.forward;
+            Vector3 spawnPosition = mainCamera.transform.position + 10f * cameraDirection;
+
+            GameObject obj = Instantiate(item.prefab, spawnPosition, Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogError("Insufficient funds to purchase item: " + item.itemName);
+        }
     }
 }

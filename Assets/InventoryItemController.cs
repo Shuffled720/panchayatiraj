@@ -7,10 +7,10 @@ public class InventoryItemController : MonoBehaviour
 {
     public Item item;
     public int itemIndex;
+
     public void Remove2DItem()
     {
         InventoryManager.Instance.Remove2DItem(itemIndex);
-
         Destroy(gameObject);
     }
 
@@ -18,5 +18,10 @@ public class InventoryItemController : MonoBehaviour
     {
         item = newItem;
         itemIndex = index;
+    }
+
+    public void OnItemClick()
+    {
+        InventoryManager.Instance.Instantiate3DItem(item);
     }
 }
